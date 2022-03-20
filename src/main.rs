@@ -8,7 +8,7 @@
 extern crate alloc;
 
 use rusty_os::task::{executor::Executor, keyboard, Task};
-use rusty_os::{print, println};
+use rusty_os::{print, println, sys};
 use bootloader::{entry_point, BootInfo};
 use core::panic::PanicInfo;
 
@@ -19,7 +19,7 @@ fn kernel_main(boot_info: &'static BootInfo) -> ! {
     use rusty_os::memory::{self, BootInfoFrameAllocator};
     use x86_64::VirtAddr;
 
-    println!("Hello World{}", "!");
+    println!("Welcome to rusty-os!");
     rusty_os::init();
 
     let phys_mem_offset = VirtAddr::new(boot_info.physical_memory_offset);

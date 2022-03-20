@@ -16,6 +16,7 @@ pub mod memory;
 pub mod allocator;
 pub mod task;
 pub mod terminal;
+pub mod sys;
 
 extern crate alloc;
 
@@ -25,10 +26,16 @@ fn alloc_error_handler(layout: alloc::alloc::Layout) -> ! {
 }
 
 pub fn init() {
-    gdt::init();
-    interrupts::init_idt();
-    unsafe { interrupts::PICS.lock().initialize() };
-    x86_64::instructions::interrupts::enable();
+    sys::vga::init();
+    sys::gdt::init();
+    sys::idt::init();
+    sys::pic::init();
+
+    sys::idt::set_irq_handler(1, sys::idt::keyboard_interrupt_handler);
+
+    sys::serial::init();
+    sys::keyboard::init();
+    sys::time::init();
 }
 
 pub fn hlt_loop() -> ! {

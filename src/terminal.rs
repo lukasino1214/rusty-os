@@ -3,12 +3,13 @@ use alloc::vec::Vec;
 use alloc::vec;
 use lazy_static::lazy_static;
 use spin::Mutex;
-use crate::{print, println};
+use crate::{print, println, sys};
+use crate::vga_buffer::WRITER;
 
 lazy_static! {
     pub static ref TERMINAL: Mutex<Terminal> = Mutex::new(Terminal {
             current_text: String::from(""),
-            commands: vec![String::from("help"), String::from("neofetch")]
+            commands: vec![String::from("help"), String::from("neofetch"), String::from("cpuinfo"), String::from("clear"), String::from("time"), String::from("pciinfo"), String::from("atainfo")]
         });
 }
 
@@ -42,7 +43,29 @@ impl Terminal {
                     }
 
                     if command == "help" {
-                        println!("help \nneofetch")
+                        for cmd in &self.commands {
+                            println!("{}", cmd);
+                        }
+                    }
+
+                    if command == "clear" {
+                        WRITER.lock().clear();
+                    }
+
+                    if command == "cpuinfo" {
+                        sys::cpu::init();
+                    }
+
+                    if command == "time" {
+                        sys::clock::init();
+                    }
+
+                    if command == "pciinfo" {
+                        sys::pci::init();
+                    }
+
+                    if command == "atainfo" {
+                        sys::ata::init();
                     }
                 },
                 None => {}

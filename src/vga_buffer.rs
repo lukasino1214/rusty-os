@@ -116,6 +116,12 @@ impl Writer {
         }
     }
 
+    pub fn clear(&mut self) {
+        for row in 0..BUFFER_HEIGHT {
+            Self::clear_row(self, row);
+        }
+    }
+
     pub fn backspace(&mut self) {
         if self.column_position != 0 {
             let blank = ScreenChar {
